@@ -14,18 +14,22 @@ class COPS(object):
         pygame.display.set_caption('COPS: Cops Organize Paper Stacks')
 
         self.font = pygame.font.SysFont(config.fontname, config.fontsize)
-        self.font_color = pygame.Color(180, 180, 180)
+        self.font_color = pygame.Color(230, 230, 230)
 
         self.start_game()
         self.run()
 
     def start_game(self):
         self.level = 0
-        self.start_timer = 10
+        self.start_timer = 3
         self.points = 0
+        self.base_surface = pygame.Surface((config.width, config.height))
 
     def reset_surface(self):
         self.surface.fill(pygame.Color(0, 0, 0))
+
+    def reset_to_base_surface(self):
+        self.surface.blit(self.base_surface, (0, 0))
 
     @property
     def current_colors(self):
@@ -38,7 +42,7 @@ class COPS(object):
         block_location = ((config.width - 50) // 2, (config.height - 50) // 2)
         block.fill(pygame.Color(*self.right_color))
 
-        self.surface.blit(block, block_location)
+        self.base_surface.blit(block, block_location)
 
     def blit_text(self, text, **location):
         render = self.font.render(text, True, self.font_color)
@@ -52,7 +56,7 @@ class COPS(object):
         self.blit_text(f'Points: {self.points:03.0f}',
                        midtop=(config.width // 2, 5))
 
-    def blit_score(self):
+    def blit_final_score(self):
         self.blit_text(f'Final tally: {self.points:03.0f}',
                        center=(config.width // 2,
                                config.height // 2))
@@ -78,12 +82,18 @@ class COPS(object):
         self.place_random_block()
 
         while True:
-
             self.time_left = self.start_timer + start_time - time.time()
 
             if self.time_left <= 0:
                 self.level += 1
                 start_time = time.time()
+
+            if self.level > 1:
+                self.reset_surface()
+                self.blit_final_score()
+            else:
+                self.reset_to_base_surface()
+                self.blit_infos()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -97,18 +107,15 @@ class COPS(object):
                         sys.exit()
 
                     if self.level > 1:
-                        self.reset_surface()
-                        self.blit_score()
                         if color == 'restart':
                             self.start_game()
+                            self.place_random_block()
                             start_time = time.time()
                     else:
                         print(self.points, color)
 
                         if self.right_color == color:
                             self.points += 1
-                            self.reset_surface()
-                            self.blit_infos()
                             self.place_random_block()
 
             pygame.display.flip()
