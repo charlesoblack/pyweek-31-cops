@@ -19,12 +19,88 @@ class COPS(object):
 
         self.clock = pygame.time.Clock()
 
+        try:
+            with open('highscore.txt', 'r') as f:
+                self.highscore = int(f.read())
+        except (FileNotFoundError, ValueError):
+            self.highscore = 0
+
+        self.main_menu()
+
+    def main_menu(self):
+
+        self.blit_menu_splash()
+
+        start = False
+
+        while not start:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.quit()
+                    elif event.key == pygame.K_SPACE:
+                        start = True
+                    else:
+                        pass
+
+            pygame.display.flip()
+            self.clock.tick(60)
+
         self.start_game()
         self.run()
 
+    def level_menu(self):
+
+        if self.level == 4:
+            self.blit_coffee_break()
+        else:
+            self.blit_level_splash()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.quit()
+                    elif event.key == pygame.K_SPACE:
+                        self.old_blocks = []
+                        self.place_random_block()
+                        self.level += 1
+                        return
+                    else:
+                        pass
+
+            pygame.display.flip()
+            self.clock.tick(60)
+
+    def blit_coffee_break(self):
+        # TODO
+        coffee_splash = pygame.Surface((self.width, self.height))
+        coffee_splash.fill((0, 0, 200))
+
+        self.surface.blit(coffee_splash, (0, 0))
+
+    def blit_menu_splash(self):
+        # TODO
+        menu_splash = pygame.Surface((self.width, self.height))
+        menu_splash.fill((60, 60, 60))
+
+        self.surface.blit(menu_splash, (0, 0))
+
+    def blit_level_splash(self):
+        # TODO
+        level_splash = pygame.Surface((self.width, self.height))
+        level_splash.fill((200, 0, 0))
+        # modify based on level?
+
+        self.surface.blit(level_splash, (0, 0))
+
     def start_game(self):
         self.level = 1
-        self.start_timer = 10
+        self.start_timer = config.start_timer
         self.points = 0
         self.base_surface = pygame.Surface((self.width, self.height))
         self.old_blocks = []
@@ -33,6 +109,7 @@ class COPS(object):
     def blit_background(self):
         # TODO
         background = pygame.Surface((self.width, self.height))
+        background.fill((80, 80, 80))
         # blit background based on level?
         self.base_surface.blit(background, (0, 0))
 
@@ -72,6 +149,10 @@ class COPS(object):
         self.blit_text(f'Press R to restart',
                        center=(self.width // 2,
                                self.height // 2 + 40))
+
+        self.blit_text(f'High score: {self.highscore}',
+                       center=(self.width // 2,
+                               self.height // 2 + 80))
 
     def blit_block(self, color, **location):
         block = pygame.Surface((50, 50))
@@ -128,11 +209,12 @@ class COPS(object):
         while True:
             self.time_left = self.start_timer + start_time - time.time()
 
-            if self.time_left <= 0:
-                self.level += 1
+            if self.time_left <= 0 and not self.game_over:
+                self.level_menu()
                 start_time = time.time()
 
             if self.game_over:
+                self.highscore = max(self.highscore, self.points)
                 self.reset_surface()
                 self.blit_final_score()
             else:
@@ -143,14 +225,12 @@ class COPS(object):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+                    self.quit()
                 elif event.type == pygame.KEYDOWN:
                     color = keys_colors.get(event.key, None)
 
                     if color == 'quit':
-                        pygame.quit()
-                        sys.exit()
+                        self.quit()
 
                     if self.game_over:
                         if color == 'restart':
@@ -166,6 +246,15 @@ class COPS(object):
             pygame.display.flip()
             self.clock.tick(60)
         return
+
+    def save_highscore(self):
+        with open('highscore.txt', 'w') as f:
+            f.write(str(self.highscore))
+
+    def quit(self):
+        self.save_highscore()
+        pygame.quit()
+        sys.exit()
 
 
 pygame.display.init()
