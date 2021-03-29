@@ -40,54 +40,25 @@ class COPS(object):
 
         self.surface.blit(block, block_location)
 
+    def blit_text(self, text, **location):
+        render = self.font.render(text, True, self.font_color)
+        rect = render.get_rect(**location)
+        self.surface.blit(render, rect)
+
     def blit_infos(self):
-        level_text = self.font.render(f'Level: {self.level}',
-                                      True,
-                                      self.font_color,
-                                      )
-
-        level_rect = level_text.get_rect(topleft=(10, 5))
-
-        self.surface.blit(level_text, level_rect)
-
-        time_text = self.font.render(f'Time left: {self.time_left:02.0f}',
-                                     True,
-                                     self.font_color,
-                                     )
-
-        time_rect = time_text.get_rect(topright=(config.width - 10, 5))
-
-        self.surface.blit(time_text, time_rect)
-
-        points_text = self.font.render(f'Points: {self.points:03.0f}',
-                                       True,
-                                       self.font_color,
-                                       )
-
-        points_rect = points_text.get_rect(midtop=(config.width // 2, 5))
-
-        self.surface.blit(points_text, points_rect)
+        self.blit_text(f'Level: {self.level}', topleft=(10, 5))
+        self.blit_text(f'Time left: {self.time_left:02.0f}',
+                       topright=(config.width - 10, 5))
+        self.blit_text(f'Points: {self.points:03.0f}',
+                       midtop=(config.width // 2, 5))
 
     def blit_score(self):
-        points_text = self.font.render(f'Final tally: {self.points:03.0f}',
-                                       True,
-                                       self.font_color,
-                                       )
-
-        points_rect = points_text.get_rect(center=(config.width // 2,
-                                                   config.height // 2))
-
-        self.surface.blit(points_text, points_rect)
-
-        restart_text = self.font.render(f'Press R to restart',
-                                        True,
-                                        self.font_color,
-                                        )
-
-        restart_rect = restart_text.get_rect(center=(config.width // 2,
-                                                     config.height // 2 + 40))
-
-        self.surface.blit(restart_text, restart_rect)
+        self.blit_text(f'Final tally: {self.points:03.0f}',
+                       center=(config.width // 2,
+                               config.height // 2))
+        self.blit_text(f'Press R to restart',
+                       center=(config.width // 2,
+                               config.height // 2 + 40))
 
     def run(self):
 
@@ -112,6 +83,7 @@ class COPS(object):
 
             if self.time_left <= 0:
                 self.level += 1
+                start_time = time.time()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -124,7 +96,7 @@ class COPS(object):
                         pygame.quit()
                         sys.exit()
 
-                    if self.level > 0:
+                    if self.level > 1:
                         self.reset_surface()
                         self.blit_score()
                         if color == 'restart':
