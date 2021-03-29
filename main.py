@@ -98,9 +98,11 @@ class COPS(object):
                 continue
             # implicit else
             origin = config.origins[color]
+            color = tuple([max(x - 70, 0) for x in color])
             self.blit_block(color, center=self.interpolate(origin, percent))
         self.old_blocks = [(color, percent + 1)
-                           for color, percent in self.old_blocks]
+                           for color, percent in self.old_blocks
+                           if percent < 100]
 
     def run(self):
 
@@ -110,6 +112,8 @@ class COPS(object):
                        pygame.K_RIGHT: (0, 0, 255),
                        pygame.K_a: (0, 255, 255),
                        pygame.K_s: (255, 255, 0),
+                       pygame.K_w: (255, 255, 255),
+                       pygame.K_d: (190, 140, 0),
                        pygame.K_q: 'quit',
                        pygame.K_r: 'restart',
                        }
@@ -134,8 +138,8 @@ class COPS(object):
             else:
                 self.reset_to_base_surface()
                 self.blit_infos()
-                self.blit_current_block()
                 self.blit_old_blocks()
+                self.blit_current_block()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -154,8 +158,6 @@ class COPS(object):
                             self.place_random_block()
                             start_time = time.time()
                     else:
-                        print(self.points, color)
-
                         if self.right_color == color:
                             self.points += 1
                             self.old_blocks.append((color, 0))
@@ -163,7 +165,6 @@ class COPS(object):
 
             pygame.display.flip()
             self.clock.tick(60)
-
         return
 
 
