@@ -6,67 +6,70 @@ import sys
 import random
 
 
-def reset_surface(surface):
-    surface.fill(pygame.Color(0, 0, 0))
-    return surface
+class COPS(object):
 
+    def __init__(self):
 
-def place_random_block(surface, key_colors):
-    random_color = random.choice(list(key_colors.values()))
+        self.level = 0
+        self.surface = pygame.display.set_mode((config.width, config.height))
+        pygame.display.set_caption('COPS: Cops Organize Paper Stacks')
+        self.run()
 
-    block = pygame.Surface((50, 50))
-    block_location = ((config.width - 50) // 2, (config.height - 50) // 2)
-    block.fill(random_color)
+    def reset_surface(self):
+        self.surface.fill(pygame.Color(0, 0, 0))
 
-    surface.blit(block, block_location)
+    @property
+    def current_colors(self):
+        return config.level_colors[: self.level + 3]
 
-    return surface, random_color
+    def place_random_block(self):
+        self.right_color = random.choice(self.current_colors)
 
+        block = pygame.Surface((50, 50))
+        block_location = ((config.width - 50) // 2, (config.height - 50) // 2)
+        block.fill(pygame.Color(*self.right_color))
 
-def main_game_loop(surface):
+        self.surface.blit(block, block_location)
 
-    keys_colors = {pygame.K_UP: pygame.Color(255, 0, 0),
-                   pygame.K_DOWN: pygame.Color(255, 0, 255),
-                   pygame.K_LEFT: pygame.Color(0, 255, 0),
-                   pygame.K_RIGHT: pygame.Color(0, 0, 255),
-                   pygame.K_q: 'quit',
-                   }
+    def run(self):
 
-    surface = reset_surface(surface)
-    surface, right_color = place_random_block(surface, keys_colors)
+        keys_colors = {pygame.K_UP: (255, 0, 0),
+                       pygame.K_DOWN: (255, 0, 255),
+                       pygame.K_LEFT: (0, 255, 0),
+                       pygame.K_RIGHT: (0, 0, 255),
+                       pygame.K_q: 'quit',
+                       }
 
-    points = 0
+        self.reset_surface()
+        self.place_random_block()
 
-    while True:
+        self.points = 0
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                color = keys_colors.get(event.key, None)
-
-                if color == 'quit':
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    color = keys_colors.get(event.key, None)
 
-                print(points, color)
+                    if color == 'quit':
+                        pygame.quit()
+                        sys.exit()
 
-                if right_color == color:
-                    points += 1
-                    surface = reset_surface(surface)
-                    surface, right_color = place_random_block(surface,
-                                                              keys_colors)
+                    print(self.points, color)
 
-        pygame.display.flip()
+                    if self.right_color == color:
+                        self.points += 1
+                        self.reset_surface()
+                        self.place_random_block()
 
-    return
+            pygame.display.flip()
+
+        return
 
 
 pygame.display.init()
 pygame.font.init()
 
-play_surface = pygame.display.set_mode((config.width, config.height))
-pygame.display.set_caption('COPS: Cops Organize Paper Stacks')
-
-main_game_loop(play_surface)
+COPS()
