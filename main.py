@@ -117,8 +117,9 @@ class COPS(object):
 
     def blit_background(self):
         # TODO
-        background = pygame.Surface((self.width, self.height))
-        background.fill((80, 80, 80))
+        background = pygame.image.load('gfx/background.png').convert()
+        background = pygame.transform.scale(background,
+                                            (config.width, config.height))
         # blit background based on level?
         self.base_surface.blit(background, (0, 0))
 
