@@ -26,6 +26,13 @@ class COPS(object):
         self.start_timer = 3
         self.points = 0
         self.base_surface = pygame.Surface((config.width, config.height))
+        self.blit_background()
+
+    def blit_background(self):
+        # TODO
+        background = pygame.Surface((config.width, config.height))
+        # blit background based on level?
+        self.base_surface.blit(background, (0, 0))
 
     def reset_surface(self):
         self.surface.fill(pygame.Color(0, 0, 0))
