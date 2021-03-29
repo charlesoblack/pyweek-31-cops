@@ -25,7 +25,14 @@ class COPS(object):
         except (FileNotFoundError, ValueError):
             self.highscore = 0
 
+        self.load_sounds()
+
         self.main_menu()
+
+    def load_sounds(self):
+        self.good_wav = pygame.mixer.Sound('fx/good.wav')
+        self.bad_wav = pygame.mixer.Sound('fx/bad.wav')
+        self.level_wav = pygame.mixer.Sound('fx/level_finished.wav')
 
     def main_menu(self):
 
@@ -57,6 +64,8 @@ class COPS(object):
             self.blit_coffee_break()
         else:
             self.blit_level_splash()
+
+        self.level_wav.play()
 
         while True:
             for event in pygame.event.get():
@@ -239,9 +248,12 @@ class COPS(object):
                             start_time = time.time()
                     else:
                         if self.right_color == color:
+                            self.good_wav.play()
                             self.points += 1
                             self.old_blocks.append((color, 0))
                             self.place_random_block()
+                        else:
+                            self.bad_wav.play()
 
             pygame.display.flip()
             self.clock.tick(60)
@@ -259,5 +271,6 @@ class COPS(object):
 
 pygame.display.init()
 pygame.font.init()
+pygame.mixer.init()
 
 COPS()
