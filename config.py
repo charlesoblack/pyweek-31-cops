@@ -4,6 +4,7 @@ width = 800
 height = 600
 fontname = 'Arial'
 fontsize = 32
+start_timer = 3
 
 level_colors = [(255, 0, 0),  # red
                 (255, 0, 255),  # magenta
