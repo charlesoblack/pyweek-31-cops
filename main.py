@@ -16,6 +16,8 @@ class COPS(object):
         self.font = pygame.font.SysFont(config.fontname, config.fontsize)
         self.font_color = pygame.Color(230, 230, 230)
 
+        self.clock = pygame.time.Clock()
+
         self.start_game()
         self.run()
 
@@ -119,6 +121,7 @@ class COPS(object):
                             self.place_random_block()
 
             pygame.display.flip()
+            self.clock.tick(60)
 
         return
 
