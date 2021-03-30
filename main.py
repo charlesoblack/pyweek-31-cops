@@ -196,19 +196,6 @@ class COPS(object):
                            if percent < 100]
 
     def run(self):
-
-        keys_colors = {pygame.K_UP: (255, 0, 0),
-                       pygame.K_DOWN: (255, 0, 255),
-                       pygame.K_LEFT: (0, 255, 0),
-                       pygame.K_RIGHT: (0, 0, 255),
-                       pygame.K_a: (0, 255, 255),
-                       pygame.K_s: (255, 255, 0),
-                       pygame.K_w: (255, 255, 255),
-                       pygame.K_d: (190, 140, 0),
-                       pygame.K_q: 'quit',
-                       pygame.K_r: 'restart',
-                       }
-
         start_time = time.time()
         self.time_left = self.start_timer + start_time - time.time()
 
@@ -237,7 +224,7 @@ class COPS(object):
                 if event.type == pygame.QUIT:
                     self.quit()
                 elif event.type == pygame.KEYDOWN:
-                    color = keys_colors.get(event.key, None)
+                    color = config.keys.get(event.key, None)
 
                     if color == 'quit':
                         self.quit()
