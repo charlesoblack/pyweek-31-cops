@@ -55,17 +55,42 @@ class COPS(object):
             pygame.display.flip()
             self.clock.tick(60)
 
+        self.blit_story(0)
         self.start_game()
         self.run()
+
+    def blit_story(self, part):
+
+        self.surface.fill((80, 80, 80))
+
+        self.blit_text(config.story[part],
+                       center=(self.width // 2, self.height // 2))
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.quit()
+                    elif event.key == pygame.K_SPACE:
+                        return
+                    else:
+                        pass
+
+            pygame.display.flip()
+            self.clock.tick(60)
 
     def level_menu(self):
 
         if self.level == 4:
+            self.blit_story(1)
             self.blit_coffee_break()
         else:
             self.blit_level_splash()
 
         self.level_wav.play()
+        self.place_random_block()
 
         while True:
             for event in pygame.event.get():
@@ -153,16 +178,34 @@ class COPS(object):
                        midtop=(self.width // 2, 5))
 
     def blit_final_score(self):
+        self.reset_surface()
         self.blit_text(f'Final tally: {self.points:03.0f}',
                        center=(self.width // 2,
                                self.height // 2))
         self.blit_text(f'Press R to restart',
                        center=(self.width // 2,
                                self.height // 2 + 40))
-
         self.blit_text(f'High score: {self.highscore}',
                        center=(self.width // 2,
                                self.height // 2 + 80))
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.quit()
+                    elif event.key == pygame.K_r:
+                        self.start_game()
+                        self.place_random_block()
+                        self.start_time = time.time()
+                        return
+                    else:
+                        pass
+
+            pygame.display.flip()
+            self.clock.tick(60)
 
     def blit_block(self, color, **location):
         block = pygame.Surface((50, 50))
@@ -196,23 +239,24 @@ class COPS(object):
                            if percent < 100]
 
     def run(self):
-        start_time = time.time()
-        self.time_left = self.start_timer + start_time - time.time()
+        self.start_time = time.time()
+        self.time_left = self.start_timer + self.start_time - time.time()
 
         self.reset_surface()
         self.blit_infos()
         self.place_random_block()
 
         while True:
-            self.time_left = self.start_timer + start_time - time.time()
+            self.time_left = self.start_timer + self.start_time - time.time()
 
             if self.time_left <= 0 and not self.game_over:
                 self.level_menu()
-                start_time = time.time()
+                self.start_time = time.time()
 
             if self.game_over:
                 self.highscore = max(self.highscore, self.points)
                 self.reset_surface()
+                self.blit_story(2)
                 self.blit_final_score()
             else:
                 self.reset_to_base_surface()
@@ -229,11 +273,6 @@ class COPS(object):
                     if color == 'quit':
                         self.quit()
 
-                    if self.game_over:
-                        if color == 'restart':
-                            self.start_game()
-                            self.place_random_block()
-                            start_time = time.time()
                     else:
                         if self.right_color == color:
                             self.good_wav.play()

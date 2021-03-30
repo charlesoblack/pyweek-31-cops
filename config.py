@@ -7,7 +7,7 @@ width = 800
 height = 600
 fontname = 'Arial'
 fontsize = 32
-start_timer = 10
+start_timer = 1
 
 level_colors = [(255, 0, 0),  # red
                 (255, 0, 255),  # magenta
@@ -50,4 +50,8 @@ keys = [pygame.K_d,
 keys = {k: v for k, v in zip(keys, level_colors)}
 
 keys[pygame.K_q] = 'quit'
-keys[pygame.K_r] = 'restart'
+
+story = ['Another day at the job... time to file some paperwork.',
+         'Hump day... time for a coffee break.',
+         'Finally done with all this crap...'
+         ]
