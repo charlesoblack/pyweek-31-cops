@@ -285,13 +285,13 @@ class COPS(object):
 
     def blit_current_block(self):
         self.blit_block(self.right_color,
-                        center=(self.width // 2, self.height // 2))
+                        center=(self.width // 2, self.height // 2 + 40))
 
     @staticmethod
     def interpolate(origin, percent):
         center_width = ((100 - percent) * config.width // 200
                         + percent * origin[0] // 100)
-        center_height = ((100 - percent) * config.height // 200
+        center_height = ((100 - percent) * (config.height // 2 + 40) // 100
                          + percent * origin[1] // 100)
         return (center_width, center_height)
 
@@ -321,8 +321,8 @@ class COPS(object):
 
         self.reset_surface()
         self.blit_infos()
-        self.blit_cop()
         self.place_random_block()
+        self.blit_cop()
 
         while True:
             self.time_left = self.start_timer + self.start_time - time.time()
@@ -339,9 +339,9 @@ class COPS(object):
             else:
                 self.reset_to_base_surface()
                 self.blit_infos()
-                self.blit_cop()
                 self.blit_old_blocks()
                 self.blit_current_block()
+                self.blit_cop()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
