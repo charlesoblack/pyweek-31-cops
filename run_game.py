@@ -54,6 +54,14 @@ class COPS(object):
         self.cop_front = pygame.transform.scale(self.cop_front,
                                                 (config.width, config.height))
 
+        self.cop_coffee_1 = pygame.image.load('gfx/cop_coffee_1.png').convert_alpha()  # noqa
+        self.cop_coffee_1 = pygame.transform.scale(self.cop_coffee_1,
+                                                   (config.width, config.height))  # noqa
+
+        self.cop_coffee_2 = pygame.image.load('gfx/cop_coffee_2.png').convert_alpha()  # noqa
+        self.cop_coffee_2 = pygame.transform.scale(self.cop_coffee_2,
+                                                   (config.width, config.height))  # noqa
+
         cop_images = [self.cop_closeleft,
                       self.cop_closeleft,
                       self.cop_closeright,
@@ -130,15 +138,19 @@ class COPS(object):
 
         if self.level == 4:
             self.blit_story(1)
-        #     self.blit_coffee_break()
-        # else:
-        #     self.blit_level_splash()
-        self.blit_level_splash()
 
         self.level_wav.play()
         self.place_random_block()
 
+        frame = 0
+
         while True:
+            frame = (frame + 1) % 60
+            if self.level == 4:
+                self.blit_coffee_break(frame >= 30)
+            else:
+                self.blit_level_splash()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.quit()
@@ -156,15 +168,13 @@ class COPS(object):
             pygame.display.flip()
             self.clock.tick(60)
 
-    def blit_coffee_break(self):
-        # TODO
-        # coffee_splash = pygame.image.load('gfx/coffee_splash.png').convert()
-        # coffee_splash = pygame.transform.scale(coffee_splash,
-        #                                        (config.width, config.height))
-        coffee_splash = pygame.Surface((self.width, self.height))
-        coffee_splash.fill((0, 0, 200))
-
-        self.surface.blit(coffee_splash, (0, 0))
+    def blit_coffee_break(self, frame_2):
+        self.reset_to_base_surface()
+        if frame_2:
+            frame = self.cop_coffee_2
+        else:
+            frame = self.cop_coffee_1
+        self.surface.blit(frame, (0, 0))
 
     def blit_menu_splash(self):
         menu_splash = pygame.image.load('gfx/main.png').convert()
