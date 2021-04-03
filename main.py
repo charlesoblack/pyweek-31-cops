@@ -15,7 +15,7 @@ class COPS(object):
         pygame.display.set_caption('COPS: Cops Organize Paper Stacks')
 
         self.font = pygame.font.SysFont(config.fontname, config.fontsize)
-        self.font_color = pygame.Color(230, 230, 230)
+        self.font_color = pygame.Color(30, 30, 30)
 
         self.clock = pygame.time.Clock()
 
@@ -24,6 +24,51 @@ class COPS(object):
                 self.highscore = int(f.read())
         except (FileNotFoundError, ValueError):
             self.highscore = 0
+
+        self.block = pygame.image.load('gfx/paper.png').convert()
+        self.block = pygame.transform.scale(self.block,
+                                            (50, 50))
+        # self.block = pygame.Surface((50, 50))
+        # self.block.blit(self.block_image, (0, 0), (800, 600, 50, 50))
+
+        self.cop_left = pygame.image.load('gfx/cop_left.png').convert()
+        self.cop_left.set_colorkey(config.colorkey)
+        self.cop_left = pygame.transform.scale(self.cop_left,
+                                               (config.width, config.height))
+
+        self.cop_closeleft = pygame.image.load('gfx/cop_closeleft.png').convert()  # noqa
+        self.cop_closeleft.set_colorkey(config.colorkey)
+        self.cop_closeleft = pygame.transform.scale(self.cop_closeleft,
+                                                    (config.width, config.height))  # noqa
+
+        self.cop_right = pygame.image.load('gfx/cop_right.png').convert()
+        self.cop_right.set_colorkey(config.colorkey)
+        self.cop_right = pygame.transform.scale(self.cop_right,
+                                                (config.width, config.height))
+
+        self.cop_closeright = pygame.image.load('gfx/cop_closeright.png').convert()  # noqa
+        self.cop_closeright.set_colorkey(config.colorkey)
+        self.cop_closeright = pygame.transform.scale(self.cop_closeright,
+                                                     (config.width, config.height))  # noqa
+
+        self.cop_front = pygame.image.load('gfx/cop_front.png').convert()
+        self.cop_front.set_colorkey(config.colorkey)
+        self.cop_front = pygame.transform.scale(self.cop_front,
+                                                (config.width, config.height))
+
+        cop_images = [self.cop_closeleft,
+                      self.cop_closeleft,
+                      self.cop_closeright,
+                      self.cop_closeright,
+                      self.cop_left,
+                      self.cop_right,
+                      self.cop_left,
+                      self.cop_right,
+                      ]
+
+        self.cop = {k: v for k, v in zip(config.keys, cop_images)}
+        self.cop['none'] = self.cop_front
+        self.last_keypress = 'none'
 
         self.load_sounds()
 
@@ -61,7 +106,7 @@ class COPS(object):
 
     def blit_story(self, part):
 
-        self.surface.fill((80, 80, 80))
+        self.surface.fill((230, 230, 230))
 
         self.blit_text(config.story[part],
                        center=(self.width // 2, self.height // 2))
@@ -83,11 +128,14 @@ class COPS(object):
 
     def level_menu(self):
 
+        self.last_keypress = 'none'
+
         if self.level == 4:
             self.blit_story(1)
-            self.blit_coffee_break()
-        else:
-            self.blit_level_splash()
+        #     self.blit_coffee_break()
+        # else:
+        #     self.blit_level_splash()
+        self.blit_level_splash()
 
         self.level_wav.play()
         self.place_random_block()
@@ -112,20 +160,26 @@ class COPS(object):
 
     def blit_coffee_break(self):
         # TODO
+        # coffee_splash = pygame.image.load('gfx/coffee_splash.png').convert()
+        # coffee_splash = pygame.transform.scale(coffee_splash,
+        #                                        (config.width, config.height))
         coffee_splash = pygame.Surface((self.width, self.height))
         coffee_splash.fill((0, 0, 200))
 
         self.surface.blit(coffee_splash, (0, 0))
 
     def blit_menu_splash(self):
-        # TODO
-        menu_splash = pygame.Surface((self.width, self.height))
-        menu_splash.fill((60, 60, 60))
+        menu_splash = pygame.image.load('gfx/main.png').convert()
+        menu_splash = pygame.transform.scale(menu_splash,
+                                             (config.width, config.height))
 
         self.surface.blit(menu_splash, (0, 0))
 
     def blit_level_splash(self):
         # TODO
+        # level_splash = pygame.image.load('gfx/level_splash.png').convert()
+        # level_splash = pygame.transform.scale(level_splash,
+        #                                       (config.width, config.height))
         level_splash = pygame.Surface((self.width, self.height))
         level_splash.fill((200, 0, 0))
         # modify based on level?
@@ -207,12 +261,28 @@ class COPS(object):
             pygame.display.flip()
             self.clock.tick(60)
 
-    def blit_block(self, color, **location):
-        block = pygame.Surface((50, 50))
-        block_location = block.get_rect(**location)
-        block.fill(pygame.Color(*color))
+    def blit_block(self, color, darker=False, **location):
+        block_location = self.block.get_rect(**location)
 
-        self.surface.blit(block, block_location)
+        # modify color appropriately
+        modification = (pygame.Color(70, 70, 70, 0)
+                        if darker
+                        else pygame.Color(0, 0, 0, 0))
+        color = pygame.Color(color) - modification
+
+        self.block.set_colorkey('white')
+
+        color_mask = pygame.mask.from_threshold(self.block,
+                                                pygame.Color(config.colorkey),
+                                                # threshold
+                                                pygame.Color(10, 10, 10, 255),
+                                                )
+
+        colored_part = color_mask.to_surface(setcolor=color, unsetcolor=None)
+        colored_block = self.block.copy()
+        colored_block.blit(colored_part, (0, 0))
+
+        self.surface.blit(colored_block, block_location)
 
     def blit_current_block(self):
         self.blit_block(self.right_color,
@@ -232,11 +302,19 @@ class COPS(object):
                 continue
             # implicit else
             origin = config.origins[color]
-            color = tuple([max(x - 70, 0) for x in color])
-            self.blit_block(color, center=self.interpolate(origin, percent))
-        self.old_blocks = [(color, percent + 1)
+            self.blit_block(color,
+                            True,  # make it darker
+                            center=self.interpolate(origin, percent),
+                            )
+        self.old_blocks = [(color, percent + 2)
                            for color, percent in self.old_blocks
-                           if percent < 100]
+                           if percent < 80]
+
+    def blit_cop(self):
+        cop_image = self.cop.get(self.last_keypress, self.cop_front)
+        location = cop_image.get_rect(center=(config.width // 2 + 20,
+                                              config.height // 2))
+        self.surface.blit(cop_image, location)
 
     def run(self):
         self.start_time = time.time()
@@ -244,6 +322,7 @@ class COPS(object):
 
         self.reset_surface()
         self.blit_infos()
+        self.blit_cop()
         self.place_random_block()
 
         while True:
@@ -261,6 +340,7 @@ class COPS(object):
             else:
                 self.reset_to_base_surface()
                 self.blit_infos()
+                self.blit_cop()
                 self.blit_old_blocks()
                 self.blit_current_block()
 
@@ -269,6 +349,8 @@ class COPS(object):
                     self.quit()
                 elif event.type == pygame.KEYDOWN:
                     color = config.keys.get(event.key, None)
+
+                    self.last_keypress = event.key
 
                     if color == 'quit':
                         self.quit()
