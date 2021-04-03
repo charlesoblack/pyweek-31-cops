@@ -226,6 +226,8 @@ class COPS(object):
 
     def blit_final_score(self):
         self.reset_surface()
+        self.end_screen = pygame.image.load('gfx/final.png').convert()
+        self.surface.blit(self.end_screen, (0, 0))
         self.blit_text(f'Final tally: {self.points:03.0f}',
                        center=(self.width // 2,
                                self.height // 2))
