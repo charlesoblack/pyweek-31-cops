@@ -55,4 +55,4 @@ story = ['Another day at the job... time to file some paperwork.',
          'Finally done with all this crap...'
          ]
 
-colorkey = '#f807cc'
+colorkey = '#ff00ff'

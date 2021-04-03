@@ -28,31 +28,29 @@ class COPS(object):
         self.block = pygame.image.load('gfx/paper.png').convert()
         self.block = pygame.transform.scale(self.block,
                                             (50, 50))
-        # self.block = pygame.Surface((50, 50))
-        # self.block.blit(self.block_image, (0, 0), (800, 600, 50, 50))
 
-        self.cop_left = pygame.image.load('gfx/cop_left.png').convert()
-        self.cop_left.set_colorkey(config.colorkey)
+        self.cop_left = pygame.image.load('gfx/cop_left.png').convert_alpha()
+        # self.cop_left.set_colorkey(config.colorkey)
         self.cop_left = pygame.transform.scale(self.cop_left,
                                                (config.width, config.height))
 
-        self.cop_closeleft = pygame.image.load('gfx/cop_closeleft.png').convert()  # noqa
-        self.cop_closeleft.set_colorkey(config.colorkey)
+        self.cop_closeleft = pygame.image.load('gfx/cop_closeleft.png').convert_alpha()  # noqa
+        # self.cop_closeleft.set_colorkey(config.colorkey)
         self.cop_closeleft = pygame.transform.scale(self.cop_closeleft,
                                                     (config.width, config.height))  # noqa
 
-        self.cop_right = pygame.image.load('gfx/cop_right.png').convert()
-        self.cop_right.set_colorkey(config.colorkey)
+        self.cop_right = pygame.image.load('gfx/cop_right.png').convert_alpha()
+        # self.cop_right.set_colorkey(config.colorkey)
         self.cop_right = pygame.transform.scale(self.cop_right,
                                                 (config.width, config.height))
 
-        self.cop_closeright = pygame.image.load('gfx/cop_closeright.png').convert()  # noqa
-        self.cop_closeright.set_colorkey(config.colorkey)
+        self.cop_closeright = pygame.image.load('gfx/cop_closeright.png').convert_alpha()  # noqa
+        # self.cop_closeright.set_colorkey(config.colorkey)
         self.cop_closeright = pygame.transform.scale(self.cop_closeright,
                                                      (config.width, config.height))  # noqa
 
-        self.cop_front = pygame.image.load('gfx/cop_front.png').convert()
-        self.cop_front.set_colorkey(config.colorkey)
+        self.cop_front = pygame.image.load('gfx/cop_front.png').convert_alpha()
+        # self.cop_front.set_colorkey(config.colorkey)
         self.cop_front = pygame.transform.scale(self.cop_front,
                                                 (config.width, config.height))
 
@@ -182,7 +180,6 @@ class COPS(object):
         #                                       (config.width, config.height))
         level_splash = pygame.Surface((self.width, self.height))
         level_splash.fill((200, 0, 0))
-        # modify based on level?
 
         self.surface.blit(level_splash, (0, 0))
 
@@ -195,11 +192,10 @@ class COPS(object):
         self.blit_background()
 
     def blit_background(self):
-        # TODO
         background = pygame.image.load('gfx/background.png').convert()
         background = pygame.transform.scale(background,
                                             (config.width, config.height))
-        # blit background based on level?
+
         self.base_surface.blit(background, (0, 0))
 
     def reset_surface(self):
@@ -270,7 +266,7 @@ class COPS(object):
                         else pygame.Color(0, 0, 0, 0))
         color = pygame.Color(color) - modification
 
-        self.block.set_colorkey('white')
+        self.block.set_colorkey('#00ff00')
 
         color_mask = pygame.mask.from_threshold(self.block,
                                                 pygame.Color(config.colorkey),
