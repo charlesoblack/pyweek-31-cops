@@ -10,7 +10,7 @@ The only dependency our game has is `pygame==2.0.1`. (this can be installed via 
 
 Running the game is done via:
 
-```
+```bash
 ./run_game.py
 ```
 
@@ -22,4 +22,8 @@ The controls are simply: `ASDF`, `JKL;` for sending paper to each stack; and spa
 
 ## Copyright attributions
 
-All images were produced by us. The sounds were produced with TuxGuitar's drum kit.
+All images were produced by Kendra Lemon in Procreate and Adobe Photoshop. The "fire effect" backdrop is [by Gerd Altmann (Pixabay)](https://pixabay.com/illustrations/fireball-fire-explosion-flames-422746/).
+
+The sounds were produced with [TuxGuitar](https://sourceforge.net/projects/tuxguitar/)'s drum kit.
+
+We used [Python](www.python.org) and [pygame](www.pygame.org) to code our game.

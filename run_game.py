@@ -172,12 +172,8 @@ class COPS(object):
                                              (config.width, config.height))
 
         self.surface.blit(menu_splash, (0, 0))
-        # self.blit_text('Press the spacebar to start',
-        #                center=((config.width * 3) // 4,
-        #                        (config.height * 15) // 16))
 
     def blit_level_splash(self):
-        # TODO
         level_splash = pygame.image.load('gfx/level_splash.png').convert()
         level_splash = pygame.transform.scale(level_splash,
                                               (config.width, config.height))
@@ -233,10 +229,10 @@ class COPS(object):
         self.blit_text(f'Final tally: {self.points:03.0f}',
                        center=(self.width // 2,
                                self.height // 2))
-        self.blit_text(f'Press R to restart',
+        self.blit_text(f'High score: {self.highscore}',
                        center=(self.width // 2,
                                self.height // 2 + 40))
-        self.blit_text(f'High score: {self.highscore}',
+        self.blit_text(f'Press R to restart',
                        center=(self.width // 2,
                                self.height // 2 + 80))
 
