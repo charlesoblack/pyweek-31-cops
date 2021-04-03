@@ -1,0 +1,7 @@
+Cops Organize Paper Stacks
+
+cop character, organizes papers at the precinct
+color-coded papers
+each button moves one paper to the right stack
+combos for score
+maybe special items somehow? like donuts make you move faster
