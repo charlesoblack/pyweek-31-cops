@@ -308,7 +308,7 @@ class COPS(object):
             # implicit else
             origin = config.origins[color]
             self.blit_block(color,
-                            True,  # make it darker
+                            False,  # make it darker
                             center=self.interpolate(origin, percent),
                             )
         self.old_blocks = [(color, percent + 2)
