@@ -178,11 +178,9 @@ class COPS(object):
 
     def blit_level_splash(self):
         # TODO
-        # level_splash = pygame.image.load('gfx/level_splash.png').convert()
-        # level_splash = pygame.transform.scale(level_splash,
-        #                                       (config.width, config.height))
-        level_splash = pygame.Surface((self.width, self.height))
-        level_splash.fill((200, 0, 0))
+        level_splash = pygame.image.load('gfx/level_splash.png').convert()
+        level_splash = pygame.transform.scale(level_splash,
+                                              (config.width, config.height))
 
         self.surface.blit(level_splash, (0, 0))
 
