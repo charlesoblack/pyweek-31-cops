@@ -12,7 +12,7 @@ class COPS(object):
     def __init__(self):
         self.width, self.height = config.width, config.height
         self.surface = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption('COPS: Cops Organize Paper Stacks')
+        pygame.display.set_caption('C.O.P.S.: Cops Organize Paper Stacks')
 
         self.font = pygame.font.SysFont(config.fontname, config.fontsize)
         self.font_color = pygame.Color(30, 30, 30)
