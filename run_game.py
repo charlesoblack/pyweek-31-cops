@@ -172,6 +172,9 @@ class COPS(object):
                                              (config.width, config.height))
 
         self.surface.blit(menu_splash, (0, 0))
+        # self.blit_text('Press the spacebar to start',
+        #                center=((config.width * 3) // 4,
+        #                        (config.height * 15) // 16))
 
     def blit_level_splash(self):
         # TODO
